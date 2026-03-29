@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 45 30% 96%;
+    --foreground: 150 25% 15%;
+
+    --card: 45 25% 93%;
+    --card-foreground: 150 25% 15%;
+
+    --popover: 45 30% 96%;
+    --popover-foreground: 150 25% 15%;
+
+    --primary: 145 45% 35%;
+    --primary-foreground: 45 30% 96%;
+
+    --secondary: 30 50% 55%;
+    --secondary-foreground: 45 30% 96%;
+
+    --muted: 45 15% 88%;
+    --muted-foreground: 150 10% 45%;
+
+    --accent: 200 55% 45%;
+    --accent-foreground: 45 30% 96%;
+
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 45 30% 96%;
+
+    --border: 150 15% 80%;
+    --input: 150 15% 80%;
+    --ring: 145 45% 35%;
+
+    --radius: 0.25rem;
+
+    --garden-sky: 200 60% 75%;
+    --garden-grass: 120 40% 55%;
+    --garden-dirt: 30 35% 40%;
+    --garden-water: 210 55% 55%;
+    --garden-flower-pink: 340 60% 65%;
+    --garden-flower-yellow: 45 80% 60%;
+    --garden-flower-purple: 270 45% 55%;
+    --garden-tree-trunk: 25 40% 30%;
+    --garden-tree-leaves: 130 50% 40%;
+
+    --sidebar-background: 45 25% 93%;
+    --sidebar-foreground: 150 25% 15%;
+    --sidebar-primary: 145 45% 35%;
+    --sidebar-primary-foreground: 45 30% 96%;
+    --sidebar-accent: 45 15% 88%;
+    --sidebar-accent-foreground: 150 25% 15%;
+    --sidebar-border: 150 15% 80%;
+    --sidebar-ring: 145 45% 35%;
+  }
+
+  .dark {
+    --background: 150 20% 8%;
+    --foreground: 45 25% 90%;
+
+    --card: 150 18% 12%;
+    --card-foreground: 45 25% 90%;
+
+    --popover: 150 20% 8%;
+    --popover-foreground: 45 25% 90%;
+
+    --primary: 145 50% 45%;
+    --primary-foreground: 150 20% 8%;
+
+    --secondary: 30 45% 45%;
+    --secondary-foreground: 45 25% 90%;
+
+    --muted: 150 15% 18%;
+    --muted-foreground: 45 15% 60%;
+
+    --accent: 200 50% 40%;
+    --accent-foreground: 45 25% 90%;
+
+    --destructive: 0 55% 40%;
+    --destructive-foreground: 45 25% 90%;
+
+    --border: 150 12% 22%;
+    --input: 150 12% 22%;
+    --ring: 145 50% 45%;
+
+    --sidebar-background: 150 18% 12%;
+    --sidebar-foreground: 45 25% 90%;
+    --sidebar-primary: 145 50% 45%;
+    --sidebar-primary-foreground: 150 20% 8%;
+    --sidebar-accent: 150 15% 18%;
+    --sidebar-accent-foreground: 45 25% 90%;
+    --sidebar-border: 150 12% 22%;
+    --sidebar-ring: 145 50% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'VT323', monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Press Start 2P', cursive;
+  }
+}
+
+@layer utilities {
+  .pixel-border {
+    image-rendering: pixelated;
+    box-shadow: 
+      -4px 0 0 0 hsl(var(--border)),
+      4px 0 0 0 hsl(var(--border)),
+      0 -4px 0 0 hsl(var(--border)),
+      0 4px 0 0 hsl(var(--border));
+  }
+
+  .pixel-shadow {
+    box-shadow: 
+      4px 4px 0 0 hsl(var(--foreground) / 0.2);
+  }
+
+  .font-pixel {
+    font-family: 'Press Start 2P', cursive;
+  }
+
+  .font-pixel-body {
+    font-family: 'VT323', monospace;
+  }
+}
