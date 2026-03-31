@@ -1,0 +1,2 @@
+[functions.github-garden]
+verify_jwt = false
