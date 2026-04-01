@@ -22,6 +22,9 @@ Visit `gitgarden.io/your-username` and watch your garden grow based on your real
 | 200+ total commits                 | 🦋 Butterflies    |
 | 500+ total commits                 | 🐦 Birds          |
 | Had long streak, now inactive      | 🍂 Falling leaves |
+| 10+ followers (1 per 10, max 3)    | 🦔 Hedgehogs      |
+| 100+ followers (1 per 100, max 2)  | 🦌 Deer           |
+| 1000+ followers                    | 🦊 Fox            |
 
 Gardens update every 24 hours. No login required to view — just enter any GitHub username.
 

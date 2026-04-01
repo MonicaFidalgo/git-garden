@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DemoGarden } from "@/components/garden/DemoGarden";
-import { Search, Github, Compass, Sparkles } from "lucide-react";
+import { Search, Compass, Sparkles } from "lucide-react";
 import Footer from "@/components/Footer";
 
 const FEATURED_USERS = [
@@ -43,13 +43,13 @@ const Index = () => {
           >
             <Compass className="w-4 h-4 mr-1" /> Explore
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             size="sm"
             className="font-pixel-body text-lg pixel-shadow"
           >
             <Github className="w-4 h-4 mr-1" /> Sign in
-          </Button>
+          </Button> */}
         </div>
       </nav>
 

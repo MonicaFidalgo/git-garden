@@ -177,6 +177,67 @@ function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number) {
   drawPixelRect(ctx, x + 1, y + 2, 3, 1, color);
 }
 
+function drawHedgehog(ctx: CanvasRenderingContext2D, x: number, groundY: number, flip: boolean) {
+  const d = flip ? -1 : 1;
+  // Body (brown oval)
+  drawPixelRect(ctx, x, groundY - 2, 3, 2, '#8b5e3c');
+  // Head
+  drawPixelRect(ctx, x + 2 * d + (flip ? 0 : 1), groundY - 3, 2, 2, '#c49a6c');
+  // Eye
+  drawPixelRect(ctx, x + 2 * d + (flip ? 0 : 2), groundY - 3, 1, 1, '#1a1a1a');
+  // Spines (dark tips on body)
+  drawPixelRect(ctx, x + 1, groundY - 4, 1, 1, '#4a3020');
+  drawPixelRect(ctx, x + 2, groundY - 4, 1, 1, '#4a3020');
+  drawPixelRect(ctx, x, groundY - 3, 1, 1, '#6a4030');
+  // Legs
+  drawPixelRect(ctx, x, groundY - 1, 1, 1, '#7a4e2c');
+  drawPixelRect(ctx, x + 2, groundY - 1, 1, 1, '#7a4e2c');
+}
+
+function drawDeer(ctx: CanvasRenderingContext2D, x: number, groundY: number, flip: boolean) {
+  const d = flip ? -1 : 1;
+  // Body
+  drawPixelRect(ctx, x, groundY - 4, 5, 3, '#c8854a');
+  // Neck + head
+  drawPixelRect(ctx, x + 4 * d + (flip ? 1 : 0), groundY - 6, 2, 3, '#c8854a');
+  drawPixelRect(ctx, x + 4 * d + (flip ? 0 : 1), groundY - 7, 3, 2, '#d4956a');
+  // Eye
+  drawPixelRect(ctx, x + 4 * d + (flip ? 0 : 3), groundY - 7, 1, 1, '#1a1a1a');
+  // Antlers
+  drawPixelRect(ctx, x + 4 * d + (flip ? 1 : 2), groundY - 9, 1, 2, '#7a5030');
+  drawPixelRect(ctx, x + 4 * d + (flip ? 0 : 3), groundY - 9, 1, 1, '#7a5030');
+  drawPixelRect(ctx, x + 4 * d + (flip ? 2 : 1), groundY - 9, 1, 1, '#7a5030');
+  // Legs
+  drawPixelRect(ctx, x + 1, groundY - 1, 1, 2, '#a06030');
+  drawPixelRect(ctx, x + 3, groundY - 1, 1, 2, '#a06030');
+  // White tail spot
+  drawPixelRect(ctx, flip ? x : x + 4, groundY - 4, 1, 2, '#f5f0e0');
+}
+
+function drawFox(ctx: CanvasRenderingContext2D, x: number, groundY: number, flip: boolean) {
+  const hx = flip ? x : x + 4;
+  const tx = flip ? x + 6 : x;
+  // Tail
+  drawPixelRect(ctx, tx, groundY - 3, 3, 2, '#e05020');
+  drawPixelRect(ctx, tx + (flip ? -1 : 2), groundY - 4, 2, 2, '#e05020');
+  drawPixelRect(ctx, tx + (flip ? -1 : 2), groundY - 5, 2, 1, '#f5f0e0');
+  // Body
+  drawPixelRect(ctx, x + 1, groundY - 4, 5, 3, '#e07030');
+  // Head
+  drawPixelRect(ctx, hx, groundY - 6, 4, 3, '#e07030');
+  // Snout
+  drawPixelRect(ctx, hx + (flip ? 0 : 3), groundY - 5, 2, 1, '#f5c0a0');
+  // Ears
+  drawPixelRect(ctx, hx + (flip ? 2 : 1), groundY - 8, 1, 2, '#e07030');
+  drawPixelRect(ctx, hx + (flip ? 0 : 3), groundY - 8, 1, 2, '#e07030');
+  // Eye
+  drawPixelRect(ctx, hx + (flip ? 1 : 2), groundY - 6, 1, 1, '#1a1a1a');
+  // Legs
+  drawPixelRect(ctx, x + 1, groundY - 1, 1, 1, '#c05020');
+  drawPixelRect(ctx, x + 3, groundY - 1, 1, 1, '#c05020');
+  drawPixelRect(ctx, x + 5, groundY - 1, 1, 1, '#c05020');
+}
+
 function darkenColor(hex: string, amount: number): string {
   const r = Math.max(0, parseInt(hex.slice(1, 3), 16) - amount);
   const g = Math.max(0, parseInt(hex.slice(3, 5), 16) - amount);
@@ -283,7 +344,7 @@ export function PixelGarden({ data, width = 200, height = 120, animated = true, 
       plantPositions.push(tx);
 
       const color = langColors[t % langColors.length];
-      const treeHeight = Math.floor(8 + activityFactor * 20 + plantRand() * 5);
+      const treeHeight = Math.floor(6 + activityFactor * 18 + plantRand() * 14);
       drawTree(ctx, tx, groundY, treeHeight, color, plantRand);
     }
 
@@ -361,6 +422,34 @@ export function PixelGarden({ data, width = 200, height = 120, animated = true, 
         const ly = (Math.floor(frame * 0.5 + l * 30) % (groundY - 5)) + 5;
         drawPixelRect(ctx, lx, ly, 1, 1, '#d4a030');
       }
+    }
+
+    // Animals based on follower count
+    const followers = data.user.followers;
+    const animalRand = seededRandom(seed + 800);
+    if (followers >= 10) {
+      const hedgehogCount = Math.min(3, Math.floor(followers / 10));
+      for (let i = 0; i < hedgehogCount; i++) {
+        const ax = Math.floor(animalRand() * (width - 12)) + 4
+          + Math.floor(Math.sin(frame * 0.005 + i * 2.1) * 6);
+        const flip = Math.sin(frame * 0.005 + i * 2.1) < 0;
+        drawHedgehog(ctx, ax, groundY, flip);
+      }
+    }
+    if (followers >= 100) {
+      const deerCount = Math.min(2, Math.floor(followers / 100));
+      for (let i = 0; i < deerCount; i++) {
+        const ax = Math.floor(animalRand() * (width - 16)) + 6
+          + Math.floor(Math.sin(frame * 0.004 + i * 3.7) * 8);
+        const flip = Math.sin(frame * 0.004 + i * 3.7) < 0;
+        drawDeer(ctx, ax, groundY, flip);
+      }
+    }
+    if (followers >= 1000) {
+      const ax = Math.floor(animalRand() * (width - 18)) + 6
+        + Math.floor(Math.sin(frame * 0.003) * 10);
+      const flip = Math.sin(frame * 0.003) < 0;
+      drawFox(ctx, ax, groundY, flip);
     }
 
     // Fence at bottom
