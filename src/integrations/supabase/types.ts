@@ -27,6 +27,7 @@ export type Database = {
           active_days: number
           repos: number
           last_synced: string | null
+          raw_data: Json | null
           created_at: string
         }
         Insert: {
@@ -41,6 +42,7 @@ export type Database = {
           active_days?: number
           repos?: number
           last_synced?: string | null
+          raw_data?: Json | null
           created_at?: string
         }
         Update: {
@@ -55,6 +57,7 @@ export type Database = {
           active_days?: number
           repos?: number
           last_synced?: string | null
+          raw_data?: Json | null
           created_at?: string
         }
         Relationships: []

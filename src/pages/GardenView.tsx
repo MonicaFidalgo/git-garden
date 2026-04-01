@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchAllGitHubData, type GitHubData } from "@/services/github";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { PixelGarden } from "@/components/garden/PixelGarden";
 import { GardenStats } from "@/components/garden/GardenStats";
 import { Button } from "@/components/ui/button";
@@ -21,30 +22,62 @@ const GardenView = () => {
     if (!username) return;
     setLoading(true);
     setError(null);
-    fetchAllGitHubData(username)
-      .then(async (result) => {
-        setData(result);
-        const activeDays = result.contributions.filter(
-          (d) => d.count > 0,
-        ).length;
-        await supabase.from("gardens").upsert(
-          {
-            username: result.user.login,
-            username_key: result.user.login.toLowerCase(),
-            name: result.user.name,
-            avatar_url: result.user.avatar_url,
-            bio: result.user.bio,
-            contributions: result.totalCommits,
-            streak: result.currentStreak,
-            active_days: activeDays,
-            repos: result.user.public_repos,
-            last_synced: new Date().toISOString(),
-          },
-          { onConflict: "username" },
-        );
+
+    const upsertGarden = async (result: GitHubData) => {
+      const activeDays = result.contributions.filter(
+        (d) => d.count > 0,
+      ).length;
+      await supabase.from("gardens").upsert(
+        {
+          username: result.user.login,
+          username_key: result.user.login.toLowerCase(),
+          name: result.user.name,
+          avatar_url: result.user.avatar_url,
+          bio: result.user.bio,
+          contributions: result.totalCommits,
+          streak: result.currentStreak,
+          active_days: activeDays,
+          repos: result.user.public_repos,
+          last_synced: new Date().toISOString(),
+          raw_data: result as unknown as Json,
+        },
+        { onConflict: "username" },
+      );
+    };
+
+    supabase
+      .from("gardens")
+      .select("raw_data, last_synced")
+      .eq("username_key", username.toLowerCase())
+      .maybeSingle()
+      .then(async ({ data: row }) => {
+        if (row?.raw_data != null) {
+          setData(row.raw_data as unknown as GitHubData);
+          setLoading(false);
+
+          const isStale =
+            !row.last_synced ||
+            Date.now() - new Date(row.last_synced).getTime() >= 60 * 60 * 1000;
+
+          if (isStale) {
+            fetchAllGitHubData(username)
+              .then(upsertGarden)
+              .catch(() => {/* silent background failure */});
+          }
+        } else {
+          fetchAllGitHubData(username)
+            .then(async (result) => {
+              setData(result);
+              await upsertGarden(result);
+            })
+            .catch((e) => setError(e.message))
+            .finally(() => setLoading(false));
+        }
       })
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
+      .catch((e) => {
+        setError(e.message);
+        setLoading(false);
+      });
   }, [username]);
 
   const handleShare = async () => {
