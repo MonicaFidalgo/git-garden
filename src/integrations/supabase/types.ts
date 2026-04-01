@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      gardens: {
+        Row: {
+          id: string
+          username: string
+          username_key: string
+          name: string | null
+          avatar_url: string | null
+          bio: string | null
+          contributions: number
+          streak: number
+          active_days: number
+          repos: number
+          last_synced: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          username: string
+          username_key: string
+          name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          contributions?: number
+          streak?: number
+          active_days?: number
+          repos?: number
+          last_synced?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          username?: string
+          username_key?: string
+          name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          contributions?: number
+          streak?: number
+          active_days?: number
+          repos?: number
+          last_synced?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
