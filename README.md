@@ -15,8 +15,8 @@ Visit `gitgarden.io/your-username` and watch your garden grow based on your real
 | GitHub activity                    | Garden element    |
 | ---------------------------------- | ----------------- |
 | Recent commit density (last 90d)   | 🌸 Flowers        |
-| Repositories                       | 🌳 Trees          |
-| Repositories                       | 🌿 Bushes         |
+| Public repositories (up to 20)     | 🌳 Trees          |
+| Repositories (every 5 repos)       | 🌿 Bushes         |
 | Longest streak > 30 days           | 🌻 Sunflowers     |
 | Current streak < 3 days            | 🍄 Mushrooms      |
 | 200+ total commits                 | 🦋 Butterflies    |
