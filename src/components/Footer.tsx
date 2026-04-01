@@ -22,6 +22,15 @@ const Footer = () => (
       >
         ☕ buy me a coffee
       </a>
+      {" · "}
+      <a
+        href="https://github.com/MonicaFidalgo/git-garden/issues/new?template=feature_request.md&title=[Feature+Request]"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline hover:text-foreground transition-colors"
+      >
+        💡 suggest a feature
+      </a>
     </p>
   </footer>
 );
