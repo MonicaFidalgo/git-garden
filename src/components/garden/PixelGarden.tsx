@@ -11,7 +11,7 @@ const LANGUAGE_COLORS: Record<string, string> = {
   Ruby: '#cc342d',
   Java: '#b07219',
   'C++': '#6866fb',
-  C: '#555555',
+  C: '#a8b9cc',
   PHP: '#8892be',
   Swift: '#f05138',
   Kotlin: '#a97bff',
@@ -146,6 +146,30 @@ function drawButterfly(ctx: CanvasRenderingContext2D, x: number, y: number, fram
   }
 }
 
+function drawSunflower(ctx: CanvasRenderingContext2D, x: number, groundY: number, rand: () => number) {
+  const stemH = 4 + Math.floor(rand() * 3);
+  for (let sy = 0; sy < stemH; sy++) {
+    drawPixelRect(ctx, x, groundY - stemH + sy, 1, 1, '#4a7c3f');
+  }
+  const headY = groundY - stemH - 1;
+  // Petals (yellow)
+  drawPixelRect(ctx, x, headY - 1, 1, 1, '#ffd700');
+  drawPixelRect(ctx, x, headY + 1, 1, 1, '#ffd700');
+  drawPixelRect(ctx, x - 1, headY, 1, 1, '#ffd700');
+  drawPixelRect(ctx, x + 1, headY, 1, 1, '#ffd700');
+  // Center (brown)
+  drawPixelRect(ctx, x, headY, 1, 1, '#7b3f00');
+}
+
+function drawBird(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  // Simple V-shape in dark grey
+  drawPixelRect(ctx, x - 2, y, 1, 1, '#444444');
+  drawPixelRect(ctx, x - 1, y - 1, 1, 1, '#444444');
+  drawPixelRect(ctx, x, y, 1, 1, '#444444');
+  drawPixelRect(ctx, x + 1, y - 1, 1, 1, '#444444');
+  drawPixelRect(ctx, x + 2, y, 1, 1, '#444444');
+}
+
 function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number) {
   const color = '#ffffff';
   drawPixelRect(ctx, x + 1, y, 3, 1, color);
@@ -244,31 +268,29 @@ export function PixelGarden({ data, width = 200, height = 120, animated = true, 
     const plantRand = seededRandom(seed + 300);
     const plantPositions: number[] = [];
     
-    // Trees for top languages (repos = zones)
-    const topLangs = sortedLangs.slice(0, 5);
-    const zoneWidth = Math.floor(width / Math.max(topLangs.length, 1));
-    
-    topLangs.forEach(([lang, count], i) => {
-      const zoneStart = i * zoneWidth + 2;
-      const color = LANGUAGE_COLORS[lang] || '#5a9c4f';
-      const treeCount = Math.min(3, Math.ceil(count / 3));
-      
-      for (let t = 0; t < treeCount; t++) {
-        const tx = zoneStart + Math.floor(plantRand() * (zoneWidth - 6)) + 3;
-        if (plantPositions.some(p => Math.abs(p - tx) < 5)) continue;
-        plantPositions.push(tx);
-        
-        // Tree height based on contributions (activity = growth)
-        const activityFactor = Math.min(1, data.totalCommits / 500);
-        const treeHeight = Math.floor(8 + activityFactor * 20 + plantRand() * 5);
-        drawTree(ctx, tx, groundY, treeHeight, color, plantRand);
-      }
-    });
+    // Trees based on public_repos count, colors cycling through languages
+    const langColors = sortedLangs.map(([lang]) => LANGUAGE_COLORS[lang] || '#5a9c4f');
+    if (langColors.length === 0) langColors.push('#5a9c4f');
+    const nTrees = Math.min(Math.min(data.user.public_repos, 20), Math.max(5, Math.floor(Math.log10(Math.max(1, data.user.public_repos)) / Math.log10(100) * 25)));
+    const activityFactor = Math.min(1, Math.log10(Math.max(1, data.totalCommits)) / Math.log10(5000));
+
+    for (let t = 0; t < nTrees; t++) {
+      // Spread evenly across full width with some random jitter
+      const slotWidth = Math.floor((width - 6) / nTrees);
+      const slotStart = 3 + t * slotWidth;
+      const tx = slotStart + Math.floor(plantRand() * Math.max(1, slotWidth - 2));
+      if (plantPositions.some(p => Math.abs(p - tx) < 5)) continue;
+      plantPositions.push(tx);
+
+      const color = langColors[t % langColors.length];
+      const treeHeight = Math.floor(8 + activityFactor * 20 + plantRand() * 5);
+      drawTree(ctx, tx, groundY, treeHeight, color, plantRand);
+    }
 
     // Flowers for contribution density
     const recentContribs = data.contributions.slice(-90);
     const avgContrib = recentContribs.reduce((s, d) => s + d.count, 0) / Math.max(recentContribs.length, 1);
-    const flowerCount = Math.floor(Math.min(30, avgContrib * 5 + 3));
+    const flowerCount = Math.floor(Math.min(40, Math.log10(Math.max(1, data.totalCommits)) / Math.log10(5000) * 35 + 5));
     const flowerColors = ['#ff6b9d', '#ffd93d', '#c084fc', '#ff8a65', '#69db7c'];
     
     for (let f = 0; f < flowerCount; f++) {
@@ -277,6 +299,17 @@ export function PixelGarden({ data, width = 200, height = 120, animated = true, 
       plantPositions.push(fx);
       const fh = Math.floor(3 + plantRand() * 5);
       drawFlower(ctx, fx, groundY, fh, flowerColors[f % flowerColors.length], plantRand);
+    }
+
+    // Sunflowers for long streaks
+    if (data.longestStreak > 30) {
+      const sfCount = Math.min(5, Math.floor(data.longestStreak / 15));
+      for (let sf = 0; sf < sfCount; sf++) {
+        const sfx = Math.floor(plantRand() * (width - 4)) + 2;
+        if (plantPositions.some(p => Math.abs(p - sfx) < 3)) continue;
+        plantPositions.push(sfx);
+        drawSunflower(ctx, sfx, groundY, plantRand);
+      }
     }
 
     // Bushes
@@ -310,6 +343,17 @@ export function PixelGarden({ data, width = 200, height = 120, animated = true, 
       }
     }
 
+    // Birds for high commit counts
+    if (data.totalCommits > 500) {
+      const birdCount = Math.min(3, Math.floor((data.totalCommits - 500) / 500) + 1);
+      for (let b = 0; b < birdCount; b++) {
+        const birdSeed = seededRandom(seed + 700 + b);
+        const bx = Math.floor(birdSeed() * (width - 8) + 4) + Math.floor(Math.sin(frame * 0.01 + b * 2) * 8);
+        const by = Math.floor(groundY * 0.1 + birdSeed() * groundY * 0.3);
+        drawBird(ctx, bx, by);
+      }
+    }
+
     // Falling leaves for short streaks (autumn effect)
     if (data.currentStreak < 7 && data.longestStreak > 14) {
       for (let l = 0; l < 5; l++) {
@@ -330,15 +374,15 @@ export function PixelGarden({ data, width = 200, height = 120, animated = true, 
 
     // Sign with username
     const signX = 3;
-    const signY = groundY - 6;
-    drawPixelRect(ctx, signX, signY, 12, 5, '#c4a060');
-    drawPixelRect(ctx, signX + 5, signY + 5, 1, 3, '#8b7355');
-    drawPixelRect(ctx, signX + 6, signY + 5, 1, 3, '#8b7355');
-    
-    // Username text on sign (tiny)
+    const signY = groundY - 11;
+    drawPixelRect(ctx, signX, signY, 20, 8, '#c4a060');
+    drawPixelRect(ctx, signX + 8,  signY + 8, 2, 4, '#8b7355');
+    drawPixelRect(ctx, signX + 10, signY + 8, 2, 4, '#8b7355');
+
+    // Username text on sign
     ctx.fillStyle = '#3a2a10';
-    ctx.font = `${PIXEL * 1.5}px 'Press Start 2P', monospace`;
-    ctx.fillText(data.user.login.slice(0, 6), (signX + 1) * PIXEL, (signY + 3.5) * PIXEL);
+    ctx.font = `${PIXEL * 2}px 'Press Start 2P', monospace`;
+    ctx.fillText(data.user.login.slice(0, 8), (signX + 1) * PIXEL, (signY + 5.5) * PIXEL);
   }, [data, width, height]);
 
   useEffect(() => {

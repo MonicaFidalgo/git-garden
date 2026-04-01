@@ -2,7 +2,7 @@
 
 **Your GitHub contributions as a living garden.**
 
-Every commit grows a flower. Every repo plants a tree. Every streak spawns a mushroom. The more you code, the more your garden blooms.
+Every commit grows a flower. Every repo plants a tree. Long streaks bloom sunflowers. The more you code, the more your garden thrives.
 
 ![GitGarden Preview](public/placeholder.png)
 
@@ -12,14 +12,16 @@ Every commit grows a flower. Every repo plants a tree. Every streak spawns a mus
 
 Visit `gitgarden.io/your-username` and watch your garden grow based on your real GitHub contribution data.
 
-| GitHub activity                       | Garden element |
-| ------------------------------------- | -------------- |
-| Contributions (commits, PRs, reviews) | 🌸 Flowers     |
-| Active days                           | 🌻 Sunflowers  |
-| Longest streak                        | 🍄 Mushrooms   |
-| Repositories                          | 🌳 Trees       |
-| 100+ contributions                    | 🦋 Butterflies |
-| 300+ contributions                    | 🐦 Birds       |
+| GitHub activity                    | Garden element    |
+| ---------------------------------- | ----------------- |
+| Recent commit density (last 90d)   | 🌸 Flowers        |
+| Repositories                       | 🌳 Trees          |
+| Repositories                       | 🌿 Bushes         |
+| Longest streak > 30 days           | 🌻 Sunflowers     |
+| Current streak < 3 days            | 🍄 Mushrooms      |
+| 200+ total commits                 | 🦋 Butterflies    |
+| 500+ total commits                 | 🐦 Birds          |
+| Had long streak, now inactive      | 🍂 Falling leaves |
 
 Gardens update every 24 hours. No login required to view — just enter any GitHub username.
 

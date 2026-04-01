@@ -14,16 +14,16 @@ export function GardenStats({ data }: GardenStatsProps) {
   const stats = [
     {
       label: "Total Commits",
-      value: data.totalCommits.toLocaleString(),
-      icon: "🌱",
+      value: data.totalCommits.toLocaleString('en-US'),
+      icon: "🟩",
     },
-    { label: "Repos", value: data.repos.length.toString(), icon: "🌳" },
+    { label: "Repos", value: data.repos.length.toString(), icon: "📁" },
     { label: "Current Streak", value: `${data.currentStreak}d`, icon: "🔥" },
-    { label: "Longest Streak", value: `${data.longestStreak}d`, icon: "⭐" },
+    { label: "Longest Streak", value: `${data.longestStreak}d`, icon: "⚡" },
     {
       label: "Followers",
-      value: data.user.followers.toLocaleString(),
-      icon: "🦋",
+      value: data.user.followers.toLocaleString('en-US'),
+      icon: "👥",
     },
   ];
 
@@ -42,9 +42,14 @@ export function GardenStats({ data }: GardenStatsProps) {
               <CardTitle className="text-sm leading-relaxed">
                 {data.user.name || data.user.login}
               </CardTitle>
-              <p className="text-lg font-pixel-body text-muted-foreground">
+              <a
+                href={`https://github.com/${data.user.login}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg font-pixel-body text-muted-foreground hover:underline"
+              >
                 @{data.user.login}
-              </p>
+              </a>
             </div>
           </div>
         </CardHeader>
