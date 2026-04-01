@@ -1,14 +1,22 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { DemoGarden } from '@/components/garden/DemoGarden';
-import { Search, Github, Compass, Sparkles } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { DemoGarden } from "@/components/garden/DemoGarden";
+import { Search, Github, Compass, Sparkles } from "lucide-react";
+import Footer from "@/components/Footer";
 
-const FEATURED_USERS = ['torvalds', 'gaearon', 'sindresorhus', 'tj', 'yyx990803', 'ThePrimeagen'];
+const FEATURED_USERS = [
+  "torvalds",
+  "gaearon",
+  "sindresorhus",
+  "tj",
+  "yyx990803",
+  "ThePrimeagen",
+];
 
 const Index = () => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -31,7 +39,7 @@ const Index = () => {
             variant="ghost"
             size="sm"
             className="font-pixel-body text-lg"
-            onClick={() => navigate('/explore')}
+            onClick={() => navigate("/explore")}
           >
             <Compass className="w-4 h-4 mr-1" /> Explore
           </Button>
@@ -49,7 +57,8 @@ const Index = () => {
       <main className="max-w-4xl mx-auto px-4 pt-12 pb-20">
         <div className="text-center mb-8">
           <h1 className="text-2xl md:text-3xl font-pixel text-foreground leading-relaxed mb-4">
-            Your GitHub,<br />
+            Your GitHub,
+            <br />
             <span className="text-primary">as a garden</span>
           </h1>
           <p className="text-2xl md:text-3xl font-pixel-body text-muted-foreground max-w-lg mx-auto">
@@ -66,7 +75,10 @@ const Index = () => {
         </div>
 
         {/* Search */}
-        <form onSubmit={handleSearch} className="flex gap-2 max-w-md mx-auto mb-16">
+        <form
+          onSubmit={handleSearch}
+          className="flex gap-2 max-w-md mx-auto mb-16"
+        >
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -76,7 +88,10 @@ const Index = () => {
               className="pl-10 font-pixel-body text-xl h-12 pixel-shadow"
             />
           </div>
-          <Button type="submit" className="font-pixel-body text-xl h-12 px-6 pixel-shadow">
+          <Button
+            type="submit"
+            className="font-pixel-body text-xl h-12 px-6 pixel-shadow"
+          >
             <Sparkles className="w-4 h-4 mr-1" />
             Grow
           </Button>
@@ -100,11 +115,15 @@ const Index = () => {
                   src={`https://github.com/${user}.png?size=40`}
                   alt={user}
                   className="w-8 h-8 rounded"
-                  style={{ imageRendering: 'pixelated' }}
+                  style={{ imageRendering: "pixelated" }}
                 />
                 <div>
-                  <p className="font-pixel text-[10px] text-foreground leading-relaxed">{user}</p>
-                  <p className="text-sm font-pixel-body text-muted-foreground">View garden →</p>
+                  <p className="font-pixel text-[10px] text-foreground leading-relaxed">
+                    {user}
+                  </p>
+                  <p className="text-sm font-pixel-body text-muted-foreground">
+                    View garden →
+                  </p>
                 </div>
               </div>
             </button>
@@ -112,12 +131,7 @@ const Index = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-6 text-center">
-        <p className="font-pixel-body text-lg text-muted-foreground">
-          🌱 GitGarden — Grow your code, grow your garden
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { PixelGarden } from '@/components/garden/PixelGarden';
 import { GardenStats } from '@/components/garden/GardenStats';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Share2, Download, Loader2 } from 'lucide-react';
+import Footer from '@/components/Footer';
 import { toast } from 'sonner';
 
 const GardenView = () => {
@@ -113,6 +114,8 @@ const GardenView = () => {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

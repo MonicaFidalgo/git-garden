@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Search } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 const COMMUNITY_GARDENS = [
   { username: 'torvalds', description: 'Linux creator' },
@@ -100,6 +101,8 @@ const Explore = () => {
           ))}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };
