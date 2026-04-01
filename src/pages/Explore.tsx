@@ -1,32 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Search } from 'lucide-react';
 import Footer from '@/components/Footer';
+import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 
-const COMMUNITY_GARDENS = [
-  { username: 'torvalds', description: 'Linux creator' },
-  { username: 'gaearon', description: 'React core team' },
-  { username: 'sindresorhus', description: 'Open source machine' },
-  { username: 'tj', description: 'Express.js creator' },
-  { username: 'yyx990803', description: 'Vue.js creator' },
-  { username: 'ThePrimeagen', description: 'Content creator & dev' },
-  { username: 'antirez', description: 'Redis creator' },
-  { username: 'mitchellh', description: 'HashiCorp co-founder' },
-  { username: 'addyosmani', description: 'Chrome engineering' },
-  { username: 'kentcdodds', description: 'Testing & React educator' },
-  { username: 'getify', description: 'YDKJS author' },
-  { username: 'wycats', description: 'Ember.js co-creator' },
-];
+type GardenRow = Database['public']['Tables']['gardens']['Row'];
 
 const Explore = () => {
   const [search, setSearch] = useState('');
+  const [gardens, setGardens] = useState<GardenRow[]>([]);
+  const [loadingGardens, setLoadingGardens] = useState(true);
   const navigate = useNavigate();
 
-  const filtered = COMMUNITY_GARDENS.filter((g) =>
+  useEffect(() => {
+    const fetchGardens = async () => {
+      const { data } = await supabase
+        .from('gardens')
+        .select('*')
+        .order('contributions', { ascending: false });
+      setGardens(data ?? []);
+      setLoadingGardens(false);
+    };
+    fetchGardens();
+  }, []);
+
+  const filtered = gardens.filter((g) =>
     g.username.toLowerCase().includes(search.toLowerCase()) ||
-    g.description.toLowerCase().includes(search.toLowerCase())
+    (g.bio ?? '').toLowerCase().includes(search.toLowerCase())
   );
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -75,31 +78,39 @@ const Explore = () => {
         </form>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {filtered.map((garden) => (
-            <button
-              key={garden.username}
-              onClick={() => navigate(`/garden/${garden.username}`)}
-              className="bg-card border border-border rounded p-4 pixel-shadow hover:scale-[1.02] transition-transform text-left"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <img
-                  src={`https://github.com/${garden.username}.png?size=48`}
-                  alt={garden.username}
-                  className="w-10 h-10 rounded"
-                  style={{ imageRendering: 'pixelated' }}
-                />
-                <div>
-                  <p className="font-pixel text-[10px] text-foreground leading-relaxed">{garden.username}</p>
-                  <p className="text-base font-pixel-body text-muted-foreground">{garden.description}</p>
+        {loadingGardens ? (
+          <p className="font-pixel-body text-xl text-muted-foreground text-center py-12">Loading gardens…</p>
+        ) : filtered.length === 0 ? (
+          <p className="font-pixel-body text-xl text-muted-foreground text-center py-12">
+            {gardens.length === 0 ? 'No gardens yet — be the first!' : 'No gardens match your search.'}
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {filtered.map((garden) => (
+              <button
+                key={garden.username}
+                onClick={() => navigate(`/garden/${garden.username}`)}
+                className="bg-card border border-border rounded p-4 pixel-shadow hover:scale-[1.02] transition-transform text-left"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <img
+                    src={garden.avatar_url ?? `https://github.com/${garden.username}.png?size=48`}
+                    alt={garden.username}
+                    className="w-10 h-10 rounded"
+                    style={{ imageRendering: 'pixelated' }}
+                  />
+                  <div>
+                    <p className="font-pixel text-[10px] text-foreground leading-relaxed">{garden.username}</p>
+                    <p className="text-base font-pixel-body text-muted-foreground">{garden.bio ?? `@${garden.username}`}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="bg-muted rounded p-2 flex items-center justify-center">
-                <span className="font-pixel-body text-lg text-muted-foreground">🌱 View garden →</span>
-              </div>
-            </button>
-          ))}
-        </div>
+                <div className="bg-muted rounded p-2 flex items-center justify-center">
+                  <span className="font-pixel-body text-lg text-muted-foreground">🌱 View garden →</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </main>
 
       <Footer />
