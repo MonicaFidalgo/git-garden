@@ -6,7 +6,7 @@ const Footer = () => (
     <p className="font-pixel-body text-base text-muted-foreground">
       built by{" "}
       <a
-        href="https://github.com/monicafidalgo"
+        href="https://monicafidalgo.dev/"
         target="_blank"
         rel="noopener noreferrer"
         className="underline hover:text-foreground transition-colors"
